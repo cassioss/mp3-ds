@@ -13,6 +13,7 @@ public class Mutex {
     protected static ArrayList<Node> nodeList;
     protected static volatile long endTime;
     protected static volatile boolean afterInit = false;
+    protected static volatile boolean timeout = false;
 
     /**
      * Main method that creates all nodes and simulates the Maekawa mutex system.
@@ -28,9 +29,11 @@ public class Mutex {
             return;
         }
 
-        int csInt = Integer.valueOf(args[0]) * 1000;        // To be counted in seconds
-        int timeNextReq = Integer.valueOf(args[1]) * 1000;  // To be counted in seconds
-        int totExecTime = Integer.valueOf(args[2]) * 1000;  // To be counted in seconds
+        // All time variables must be multiplied by 1000 to be counted in seconds
+
+        int csInt = Integer.valueOf(args[0]) * 1000;
+        int timeNextReq = Integer.valueOf(args[1]) * 1000;
+        int totExecTime = Integer.valueOf(args[2]) * 1000;
         int option = 0;
 
         if (args.length == 4) {
@@ -40,12 +43,11 @@ public class Mutex {
                 throw new IllegalArgumentException("Error: invalid option");
         }
 
-        endTime = totExecTime + System.currentTimeMillis();
-
         for (int identifier = 0; identifier < 9; identifier++) {
             nodeList.add(new Node(identifier, csInt, timeNextReq, option));
         }
 
+        endTime = totExecTime + System.currentTimeMillis();
         new Timer().start();
         afterInit = true;
     }
@@ -62,6 +64,7 @@ public class Mutex {
         public void run() {
             while (true) {
                 if (endTime <= System.currentTimeMillis()) {
+                    timeout = true;
                     System.out.println("TIMEOUT");
                     System.exit(0);
                 }

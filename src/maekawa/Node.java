@@ -12,10 +12,11 @@ import java.util.List;
  */
 public class Node {
 
-    private int identifier, csInt, timeNextReq, option;
-    private ArrayList<Integer> subset;
+    private volatile int identifier, csInt, timeNextReq, option;
+    private volatile ArrayList<Integer> subset;
     private volatile List<Message> messageQueue;
-    private State state;
+    private volatile State state;
+    private volatile boolean voted;
 
     /**
      * Creates a node based on its identifier, the time it stays in the critical section, the time until the next
@@ -33,6 +34,7 @@ public class Node {
         this.option = option;
         this.subset = Utils.subset(this.identifier);
         this.state = State.INIT;
+        this.voted = false;
         messageQueue = new LinkedList<>();
         printCurrentState();
         new Listener().start();
@@ -42,7 +44,7 @@ public class Node {
     private class Listener extends Thread {
         @Override
         public void run() {
-            while (true) {
+            while (!Mutex.timeout) {
                 if (Mutex.afterInit && state == maekawa.State.INIT)
                     changeState(maekawa.State.REQUEST);
                 if (state == maekawa.State.REQUEST)
@@ -53,12 +55,24 @@ public class Node {
                     processRelease();
             }
         }
+
+        private void processRequest() {
+            changeState(maekawa.State.HELD);
+        }
+
+        private void processHeld() {
+            changeState(maekawa.State.RELEASE);
+        }
+
+        private void processRelease() {
+            changeState(maekawa.State.REQUEST);
+        }
     }
 
     private class Sender extends Thread {
         @Override
         public void run() {
-            while (true) {
+            while (!Mutex.timeout) {
 
             }
         }
