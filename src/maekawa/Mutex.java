@@ -1,6 +1,7 @@
 package maekawa;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Main class that coordinates the Maekawa mutex system.
@@ -14,6 +15,7 @@ public class Mutex {
     protected static volatile long endTime;
     protected static volatile boolean afterInit = false;
     protected static volatile boolean timeout = false;
+    protected volatile List<Message> mutexMessageQueue;
 
     /**
      * Main method that creates all nodes and simulates the Maekawa mutex system.
@@ -24,31 +26,36 @@ public class Mutex {
 
         nodeList = new ArrayList<>(9);  // Initial capacity of 9 nodes
 
+        // Checks if the user set enough values to start running the algorithm
         if (args.length < 3 || args.length > 4) {
             System.out.println("Usage: java -cp src maekawa.Mutex [cs_int] [next_req] [tot_exec_time] [option]");
             return;
         }
 
         // All time variables must be multiplied by 1000 to be counted in seconds
-
         int csInt = Integer.valueOf(args[0]) * 1000;
         int timeNextReq = Integer.valueOf(args[1]) * 1000;
         int totExecTime = Integer.valueOf(args[2]) * 1000;
-        int option = 0;
+        boolean option = false;
 
+        // Checks if the option being received is either 0, 1 or nothing
         if (args.length == 4) {
             if (Integer.valueOf(args[3]) == 1) {
-                option = 1;
+                option = true;
             } else if (Integer.valueOf(args[3]) != 0)
                 throw new IllegalArgumentException("Error: invalid option");
         }
 
+        // Creates each one of the 9 nodes
         for (int identifier = 0; identifier < 9; identifier++) {
             nodeList.add(new Node(identifier, csInt, timeNextReq, option));
         }
 
+        // Executes timer
         endTime = totExecTime + System.currentTimeMillis();
         new Timer().start();
+
+        //Releases nodes from INIT
         afterInit = true;
     }
 

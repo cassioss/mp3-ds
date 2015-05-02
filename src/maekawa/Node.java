@@ -12,22 +12,22 @@ import java.util.List;
  */
 public class Node {
 
-    private volatile int identifier, csInt, timeNextReq, option;
+    private volatile int identifier, csInt, timeNextReq;
     private volatile ArrayList<Integer> subset;
     private volatile List<Message> messageQueue;
     private volatile State state;
-    private volatile boolean voted;
+    private volatile boolean option, voted;
 
     /**
      * Creates a node based on its identifier, the time it stays in the critical section, the time until the next
      * request, and a simple flag for log printing.
      *
-     * @param identifier
-     * @param csInt
-     * @param timeNextReq
-     * @param option
+     * @param identifier  the node identifier.
+     * @param csInt       the time (in milliseconds) the node stays in the critical section.
+     * @param timeNextReq the time (in milliseconds) the node waits after leaving the critical section.
+     * @param option      a boolean that checks whether the node should show the messages it received or not.
      */
-    public Node(int identifier, int csInt, int timeNextReq, int option) {
+    public Node(int identifier, int csInt, int timeNextReq, boolean option) {
         this.identifier = identifier;
         this.csInt = csInt;
         this.timeNextReq = timeNextReq;
@@ -60,7 +60,11 @@ public class Node {
             changeState(maekawa.State.HELD);
         }
 
+        /**
+         * Process the HELD state, when the node enters the critical section.
+         */
         private void processHeld() {
+            printCriticalSectionLog();
             changeState(maekawa.State.RELEASE);
         }
 
@@ -76,11 +80,13 @@ public class Node {
 
             }
         }
+
+
     }
 
-    private String criticalSectionLog(int identifier, ArrayList<Integer> subset) {
+    private void printCriticalSectionLog() {
         long currentTime = System.currentTimeMillis();
-        return currentTime + " " + identifier + " " + Utils.printSubset(subset);
+        System.out.println(currentTime + " " + identifier + " " + Utils.printSubset(subset));
     }
 
     private void printCurrentState() {

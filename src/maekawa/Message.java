@@ -9,9 +9,11 @@ package maekawa;
 public class Message {
     int identifier;
     Content content;
+    long sentTime;
 
     public Message(int identifier, Content content) {
         this.identifier = identifier;
         this.content = content;
+        this.sentTime = System.currentTimeMillis();
     }
 }

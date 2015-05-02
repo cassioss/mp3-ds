@@ -1,8 +1,8 @@
 package maekawa;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
+import javafx.collections.transformation.SortedList;
+
+import java.util.*;
 
 /**
  * Simple static methods for the remaining classes. Most of them are (or can be) tested.
@@ -60,7 +60,23 @@ public final class Utils {
         return subsetList;
     }
 
+    /**
+     * Prints a subset as a sequence of numbers separated only by spaces, no commas or square brackets.
+     *
+     * @param subset an array list corresponding to a subset.
+     * @return a string that removes the square brackets and the commas from the traditional toString() method.
+     */
     public static String printSubset(ArrayList<Integer> subset) {
         return subset.toString().replaceAll("[,\\[\\]]", "");
     }
+
+    /**
+     * Sorts a list of messages according to their timestamps.
+     *
+     * @param messageList a list of Message objects.
+     */
+    public static void sortMessageList(List<Message> messageList) {
+        Collections.sort(messageList, (m1, m2) -> (int) (m1.sentTime - m2.sentTime));
+    }
+
 }
