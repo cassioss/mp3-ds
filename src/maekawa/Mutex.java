@@ -36,7 +36,7 @@ public class Mutex {
         endTime = totExecTime * 1000 + System.currentTimeMillis();
 
         for (int identifier = 0; identifier < 9; identifier++) {
-            nodeList.add(new Node(identifier, csInt, timeNextReq, totExecTime, option));
+            nodeList.add(new Node(identifier, csInt, timeNextReq, option));
         }
 
         new Timer().start();
@@ -48,7 +48,6 @@ public class Mutex {
     private static class Timer extends Thread {
         @Override
         public void run() {
-            System.out.println("Timer initiated");
             while (true) {
                 if (endTime <= System.currentTimeMillis()) {
                     System.out.println("TIMEOUT");

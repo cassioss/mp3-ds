@@ -9,17 +9,15 @@ import java.util.List;
  */
 public class Node {
 
-    private int identifier, csInt, timeNextReq, totExecTime, option;
+    private int identifier, csInt, timeNextReq, option;
     private ArrayList<Integer> subset;
     private volatile List<Message> messageQueue;
     private State state;
-    private Mutex parentMutex;
 
-    public Node(int identifier, int csInt, int timeNextReq, int totExecTime, int option) {
+    public Node(int identifier, int csInt, int timeNextReq, int option) {
         this.identifier = identifier;
         this.csInt = csInt;
         this.timeNextReq = timeNextReq;
-        this.totExecTime = totExecTime;
         this.option = option;
         this.subset = Utils.subset(this.identifier);
         this.state = State.INIT;
