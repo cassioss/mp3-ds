@@ -9,7 +9,8 @@ import java.util.ArrayList;
 public class Mutex {
 
     protected static ArrayList<Node> nodeList;
-    protected volatile long endTime;
+    protected static volatile long endTime;
+    protected static volatile boolean afterInit = false;
 
     public static void main(String[] args) {
 
@@ -25,7 +26,6 @@ public class Mutex {
         int totExecTime = Integer.valueOf(args[2]);
         int option = 0;
 
-
         if (args.length == 4) {
             if (Integer.valueOf(args[3]) == 1) {
                 option = 1;
@@ -33,15 +33,27 @@ public class Mutex {
                 throw new IllegalArgumentException("Error: invalid option");
         }
 
+        endTime = totExecTime * 1000 + System.currentTimeMillis();
+
+        for (int identifier = 0; identifier < 9; identifier++) {
+            nodeList.add(new Node(identifier, csInt, timeNextReq, totExecTime, option));
+        }
+
         new Timer().start();
+
+        afterInit = true;
 
     }
 
     private static class Timer extends Thread {
         @Override
         public void run() {
+            System.out.println("Timer initiated");
             while (true) {
-
+                if (endTime <= System.currentTimeMillis()) {
+                    System.out.println("TIMEOUT");
+                    System.exit(0);
+                }
             }
         }
     }

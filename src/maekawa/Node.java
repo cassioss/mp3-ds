@@ -1,8 +1,7 @@
 package maekawa;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.List;
 
 /**
  * @author Cassio dos Santos Sousa <dssntss2@illinois.edu>
@@ -11,8 +10,10 @@ import java.util.Queue;
 public class Node {
 
     private int identifier, csInt, timeNextReq, totExecTime, option;
-    ArrayList<Integer> subset;
-    volatile LinkedList<String> messageQueue;
+    private ArrayList<Integer> subset;
+    private volatile List<Message> messageQueue;
+    private State state;
+    private Mutex parentMutex;
 
     public Node(int identifier, int csInt, int timeNextReq, int totExecTime, int option) {
         this.identifier = identifier;
@@ -21,13 +22,18 @@ public class Node {
         this.totExecTime = totExecTime;
         this.option = option;
         this.subset = Utils.subset(this.identifier);
+        this.state = State.INIT;
+        printCurrentState();
+        new Listener().start();
+        new Sender().start();
     }
 
     private class Listener extends Thread {
         @Override
         public void run() {
             while (true) {
-
+                if (Mutex.afterInit)
+                    changeState(maekawa.State.REQUEST);
             }
         }
     }
@@ -38,6 +44,22 @@ public class Node {
             while (true) {
 
             }
+        }
+    }
+
+    private String criticalSectionLog(int identifier, ArrayList<Integer> subset) {
+        long currentTime = System.currentTimeMillis();
+        return currentTime + " " + identifier + " " + Utils.printSubset(subset);
+    }
+
+    private void printCurrentState() {
+        System.out.println("Node " + identifier + " " + state);
+    }
+
+    private void changeState(State newState) {
+        if (state != newState) {
+            state = newState;
+            printCurrentState();
         }
     }
 
