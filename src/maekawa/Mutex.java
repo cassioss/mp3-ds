@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class Mutex {
 
     protected static ArrayList<Node> nodeList;
+    protected volatile long endTime;
 
     public static void main(String[] args) {
 
@@ -30,6 +31,15 @@ public class Mutex {
             } else if (Integer.valueOf(args[3]) != 0)
                 throw new IllegalArgumentException("Error: invalid option");
         }
-        System.out.println(option);
+
+        
     }
+
+    private class Timer extends Thread {
+        @Override
+        public void run() {
+
+        }
+    }
+
 }

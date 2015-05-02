@@ -19,15 +19,16 @@ public class UtilsTest {
      */
     @Test
     public void testSubset() {
-        Integer[] testSet1 = {1, 2, 3, 4, 7};
-        Integer[] testSet2 = {1, 2, 3, 5, 8};
-        Integer[] testSet3 = {1, 2, 3, 6, 9};
-        Integer[] testSet4 = {1, 4, 5, 6, 7};
-        Integer[] testSet5 = {2, 4, 5, 6, 8};
-        Integer[] testSet6 = {3, 4, 5, 6, 9};
-        Integer[] testSet7 = {1, 4, 7, 8, 9};
-        Integer[] testSet8 = {2, 5, 7, 8, 9};
-        Integer[] testSet9 = {3, 6, 7, 8, 9};
+        Integer[] testSet0 = {0, 1, 2, 3, 6};
+        Integer[] testSet1 = {0, 1, 2, 4, 7};
+        Integer[] testSet2 = {0, 1, 2, 5, 8};
+        Integer[] testSet3 = {0, 3, 4, 5, 6};
+        Integer[] testSet4 = {1, 3, 4, 5, 7};
+        Integer[] testSet5 = {2, 3, 4, 5, 8};
+        Integer[] testSet6 = {0, 3, 6, 7, 8};
+        Integer[] testSet7 = {1, 4, 6, 7, 8};
+        Integer[] testSet8 = {2, 5, 6, 7, 8};
+        assertEquals(Utils.subset(0), new ArrayList<>(Arrays.asList(testSet0)));
         assertEquals(Utils.subset(1), new ArrayList<>(Arrays.asList(testSet1)));
         assertEquals(Utils.subset(2), new ArrayList<>(Arrays.asList(testSet2)));
         assertEquals(Utils.subset(3), new ArrayList<>(Arrays.asList(testSet3)));
@@ -36,23 +37,22 @@ public class UtilsTest {
         assertEquals(Utils.subset(6), new ArrayList<>(Arrays.asList(testSet6)));
         assertEquals(Utils.subset(7), new ArrayList<>(Arrays.asList(testSet7)));
         assertEquals(Utils.subset(8), new ArrayList<>(Arrays.asList(testSet8)));
-        assertEquals(Utils.subset(9), new ArrayList<>(Arrays.asList(testSet9)));
     }
 
     /**
      * Tests throwing an exception for an identifier smaller than 1.
      */
     @Test(expected = IllegalArgumentException.class)
-    public void testIdentifier0() {
-        Utils.subset(0);
+    public void testIdentifierNegative() {
+        Utils.subset(-1);
     }
 
     /**
      * Tests throwing an exception for an identifier greater than 9.
      */
     @Test(expected = IllegalArgumentException.class)
-    public void testIdentifier10() {
-        Utils.subset(10);
+    public void testIdentifier9() {
+        Utils.subset(9);
     }
 
     @Test
