@@ -1,8 +1,6 @@
 package maekawa;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Main class that coordinates the Maekawa mutex system.

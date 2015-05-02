@@ -79,10 +79,8 @@ public final class Utils {
      */
     public static void sortMessageList(List<Message> messageList) {
         Collections.sort(messageList, (message1, message2) -> {
-            if (message1.getSentTime() == message2.getSentTime() && message1.getReceiverID() == message2.getReceiverID())
+            if (message1.getSentTime() == message2.getSentTime())
                 return message1.getSenderID() - message2.getSenderID();
-            else if (message1.getSentTime() == message2.getSentTime())
-                return message1.getReceiverID() - message2.getReceiverID();
             else
                 return (int) (message1.getSentTime() - message2.getSentTime());
         });

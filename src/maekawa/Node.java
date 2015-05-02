@@ -49,7 +49,7 @@ public class Node {
         public void run() {
             while (!Mutex.timeout) {
                 if (messageQueue.size() > 0) {
-                    //Utils.sortMessageList(messageQueue);
+                    Utils.sortMessageList(messageQueue);
                     Message firstMessage = messageQueue.remove(0);
                     if (shouldPrintLogs)
                         printMessageLog(firstMessage);

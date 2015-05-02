@@ -83,7 +83,6 @@ public class UtilsTest {
     public void testMessageSentBy() {
         Message m0 = new Message(0, 2, Content.RELEASE);
         Message m1 = new Message(1, 2, Content.RELEASE);
-        Message m2 = new Message(2, 2, Content.RELEASE);
         List<Message> messageList = new LinkedList<>();
         messageList.add(m0);
         messageList.add(m1);
