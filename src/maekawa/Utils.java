@@ -1,5 +1,6 @@
 package maekawa;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -79,10 +80,10 @@ public final class Utils {
      */
     public static void sortMessageList(List<Message> messageList) {
         Collections.sort(messageList, (message1, message2) -> {
-            if (message1.getSentTime() == message2.getSentTime())
+            if (message1.getNanoTime() == message2.getNanoTime())
                 return message1.getSenderID() - message2.getSenderID();
             else
-                return (int) (message1.getSentTime() - message2.getSentTime());
+                return (int) (message1.getNanoTime() - message2.getNanoTime());
         });
     }
 
@@ -103,5 +104,16 @@ public final class Utils {
                 return false;
             } else return false;
         } else return false;
+    }
+
+    /**
+     * Gets the current time in a reasonable format.
+     *
+     * @return the current time in terms of hours, minutes, seconds and milliseconds.
+     */
+    public static String getCurrentTime() {
+        SimpleDateFormat sdfDate = new SimpleDateFormat("HH:mm:ss.SSS");
+        Date now = new Date();
+        return sdfDate.format(now);
     }
 }

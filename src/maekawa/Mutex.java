@@ -41,9 +41,8 @@ public class Mutex {
         int timeNextReq = Integer.valueOf(args[1]);
         int totExecTime = Integer.valueOf(args[2]) * 1000; // In order to be counted in seconds
 
-        boolean option = false;
-
         // Checks if the option being received is either 0, 1 or nothing
+        boolean option = false;
         if (args.length == 4) {
             if (Integer.valueOf(args[3]) == 1) {
                 option = true;
@@ -74,46 +73,46 @@ public class Mutex {
     }
 
     /**
-     * Multicasts a message to all the nodes.
+     * Multicasts a message to all the nodes in a sender's subset.
      *
-     * @param messageMulticast a Message list sent by a node.
+     * @param senderID the sender identifier.
+     * @param content  the intended content.
      */
-    protected static void sendMessageToAll(List<Message> messageMulticast) {
-        boolean isRequest = messageMulticast.get(0).getContent() == Content.REQUEST;
-        if (isRequest)  // This is a REQUEST multicast
-            semaphore(messageMulticast);
-        else            // This is a RELEASE multicast
-            messageMulticast.forEach(maekawa.Mutex::sendMessage);
+    protected static void sendMessageToSubsetOf(int senderID, Content content) {
+        if (content == Content.REQUEST)     // This is a REQUEST multicast, deadlocks might happen
+            semaphore(senderID);
+        else                                // This is a RELEASE multicast, no deadlocks will happen
+            resendMessage(senderID, content);
     }
 
     /**
-     * Multicasts a message based on a semaphore.
+     * Processes a sender's REQUEST multicast in a semaphore.
      *
-     * @param messageMulticast a Message list sent by a node.
+     * @param senderID the sender identifier.
      */
-    protected static void semaphore(List<Message> messageMulticast) {
-        int senderID = messageMulticast.get(0).getSenderID();
-        if (sendersToRequest.size() >= 0)
-            sendersToRequest.add(senderID);
+    protected static void semaphore(int senderID) {
+        sendersToRequest.add(senderID); // Adds every sender ID to a queue
+
+        // Basic structure of a semaphore, in order to coordinate every REQUEST multicast
+        // This semaphore process every multicast in the order they were received in the queue
         if (!multicast) {
             multicast = true;
             int senderToRequest = sendersToRequest.remove(0);
-            System.out.println("Multicast from node " + senderToRequest + " received");
-            resendRequest(senderToRequest);
-            System.out.println("Multicast from node " + senderToRequest + " finished");
+            resendMessage(senderToRequest, Content.REQUEST);
             multicast = false;
         }
     }
 
     /**
-     * Resends a REQUEST message to all the nodes that are in a sender's subset.
+     * Resends a content in a message to all the nodes that are in a sender's subset.
      *
      * @param senderID the sender identifier.
+     * @param content  the intended content.
      */
-    protected static void resendRequest(int senderID) {
+    protected static void resendMessage(int senderID, Content content) {
         List<Integer> senderSubset = nodeList.get(senderID).subset;
         for (Integer identifier : senderSubset)
-            sendMessage(new Message(senderID, identifier, Content.REQUEST));
+            sendMessage(new Message(senderID, identifier, content));
     }
 
     /**
@@ -122,7 +121,7 @@ public class Mutex {
     private static class Timer extends Thread {
 
         /**
-         * Runs the Timer thread.
+         * Runs the Timer thread, which basically coodinates all thread's timeout.
          */
         @Override
         public void run() {

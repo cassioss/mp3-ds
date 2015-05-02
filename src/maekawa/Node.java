@@ -1,8 +1,6 @@
 package maekawa;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Simulates a node in a distributed system that implements the Maekawa's algorithm.
@@ -40,7 +38,6 @@ public class Node {
         messageQueue = Collections.synchronizedList(new LinkedList<>());
         responseQueue = Collections.synchronizedList(new LinkedList<>());
         repliesList = Collections.synchronizedList(new LinkedList<>());
-        printCurrentState();
         new Listener().start();
         new StateMachine().start();
     }
@@ -60,7 +57,6 @@ public class Node {
         public void run() {
             while (!Mutex.timeout) {
                 if (messageQueue.size() > 0) {
-                    //Utils.sortMessageList(messageQueue);
                     Message firstMessage = messageQueue.remove(0);
                     if (shouldPrintLogs)
                         printMessageLog(firstMessage);
@@ -82,11 +78,9 @@ public class Node {
         private void processRequest(Message message) {
             if (state == maekawa.State.HELD || voted) {
                 responseQueue.add(message);
-                System.out.println("Node " + identifier + " archived REQUEST from node " + message.getSenderID());
             } else {
                 sendMessageTo(Content.REPLY, message.getSenderID());
                 voted = true;
-                //System.out.println("Node " + identifier + " voted for node " + message.getSenderID() + ", sending REPLY");
             }
         }
 
@@ -97,10 +91,8 @@ public class Node {
          */
         private void processReply(Message message) {
             if (repliesList.size() < subsetSize) {
-                if (!Utils.hasMessageSentBy(repliesList, message.getSenderID()) && subset.contains(message.getSenderID())) {
+                if (!Utils.hasMessageSentBy(repliesList, message.getSenderID()) && subset.contains(message.getSenderID()))
                     repliesList.add(message);
-                    System.out.println("Node " + identifier + " received REPLY from node " + message.getSenderID());
-                }
             }
         }
 
@@ -109,10 +101,8 @@ public class Node {
          */
         private void processRelease() {
             if (responseQueue.size() > 0) {
-                //Utils.sortMessageList(responseQueue);
                 Message earlyMessage = responseQueue.remove(0);
                 sendMessageTo(Content.REPLY, earlyMessage.getSenderID());
-                System.out.println("Node " + identifier + " received RELEASE from node " + earlyMessage.getSenderID());
                 voted = true;
             } else voted = false;
         }
@@ -204,28 +194,10 @@ public class Node {
      * @param content a content being multicast.
      */
     private void multicast(Content content) {
-        List<Message> multicast = subset.stream().map(id -> new Message(identifier, id, content)).collect(Collectors.toList());
-        Mutex.sendMessageToAll(multicast);
-    }
-
-    /**
-     * Multicasts the same content as a Message object to all nodes to a given node's subset. They are sent to the nodes at practically the same time.
-     *
-     * @param content a content being multicast.
-     */
-    protected void multicast(Content content, List<Integer> subset) {
-        List<Message> multicast = subset.stream().map(id -> new Message(identifier, id, content)).collect(Collectors.toList());
-        Mutex.sendMessageToAll(multicast);
+        Mutex.sendMessageToSubsetOf(identifier, content);
     }
 
     // State-related methods
-
-    /**
-     * Prints the node's current state. For debugging purposes.
-     */
-    private void printCurrentState() {
-        System.out.println("Node " + identifier + " " + state);
-    }
 
     /**
      * Changes a node's state. If the node goes to the HELD state, it prints a message log.
@@ -235,7 +207,6 @@ public class Node {
     private void changeState(State newState) {
         if (state != newState) {
             state = newState;
-            printCurrentState();
             if (newState == State.HELD)
                 printCriticalSectionLog();
         }
@@ -247,12 +218,8 @@ public class Node {
      * Prints a message log whenever the node enters the critical section.
      */
     private void printCriticalSectionLog() {
-        SimpleDateFormat sdfDate = new SimpleDateFormat("HH:mm:ss.SSS");
-        Date now = new Date();
-        String currentTime = sdfDate.format(now);
-        System.out.println(currentTime + " " + identifier + " " + Utils.printSubset(subset));
+        System.out.println(Utils.getCurrentTime() + " " + identifier + " " + Utils.printSubset(subset));
     }
-
 
     /**
      * Prints a message log whenever a node receives it. Only works if option was set to 1 before running Mutex.
@@ -260,7 +227,6 @@ public class Node {
      * @param message a Message object being received.
      */
     private void printMessageLog(Message message) {
-        long currentTime = System.currentTimeMillis();
-        System.out.println(currentTime + " " + message.getReceiverID() + " " + message.getSenderID() + " " + message.getContent() + " " + message.getSentTime());
+        System.out.println(Utils.getCurrentTime() + " " + message.getReceiverID() + " " + message.getSenderID() + " " + message.getContent());
     }
 }

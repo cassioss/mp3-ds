@@ -92,8 +92,8 @@ public class UtilsTest {
         List<Message> messageList = new LinkedList<>();
         messageList.add(m0);
         messageList.add(m1);
-        assertTrue(Utils.hasMessageSentBy(messageList, 0));
-        assertTrue(Utils.hasMessageSentBy(messageList, 1));
-        assertFalse(Utils.hasMessageSentBy(messageList, 2));
+        assertTrue(Utils.hasMessageSentBy(messageList, 0));     // These sender IDs were
+        assertTrue(Utils.hasMessageSentBy(messageList, 1));     // added to the message list,
+        assertFalse(Utils.hasMessageSentBy(messageList, 2));    // but not this one
     }
 }
