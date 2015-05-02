@@ -30,7 +30,7 @@ public class Node {
         this.csInt = csInt;
         this.timeNextReq = timeNextReq;
         this.shouldPrintLogs = option;
-        this.subset = Collections.synchronizedList(Utils.subset(this.identifier));
+        this.subset = Collections.synchronizedList(NodeUtils.subset(this.identifier));
         this.subsetSize = this.subset.size();
         this.state = State.INIT;
         this.voted = false;
@@ -90,10 +90,7 @@ public class Node {
          * @param message a Message object with a REPLY content.
          */
         private void processReply(Message message) {
-            if (repliesList.size() < subsetSize) {
-                if (!Utils.hasMessageSentBy(repliesList, message.getSenderID()) && subset.contains(message.getSenderID()))
-                    repliesList.add(message);
-            }
+            repliesList.add(message);
         }
 
         /**
@@ -218,7 +215,7 @@ public class Node {
      * Prints a message log whenever the node enters the critical section.
      */
     private void printCriticalSectionLog() {
-        System.out.println(Utils.getCurrentTime() + " " + identifier + " " + Utils.printSubset(subset));
+        System.out.println(NodeUtils.getCurrentTime() + " " + identifier + " " + NodeUtils.printSubset(subset));
     }
 
     /**
@@ -227,6 +224,6 @@ public class Node {
      * @param message a Message object being received.
      */
     private void printMessageLog(Message message) {
-        System.out.println(Utils.getCurrentTime() + " " + message.getReceiverID() + " " + message.getSenderID() + " " + message.getContent());
+        System.out.println(NodeUtils.getCurrentTime() + " " + message.getReceiverID() + " " + message.getSenderID() + " " + message.getContent());
     }
 }

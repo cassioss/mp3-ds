@@ -4,12 +4,12 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * Simple static methods for the remaining classes. Most of them are (or can be) tested.
+ * Simple static methods for the Node class. Most of them are (or can be) tested.
  *
  * @author Cassio dos Santos Sousa <dssntss2@illinois.edu>
  * @version 1.0
  */
-public final class Utils {
+public final class NodeUtils {
 
     /**
      * Generates a list containing the subset of a node given its identifier.
@@ -22,8 +22,9 @@ public final class Utils {
             throw new IllegalArgumentException("You set the wrong identifier");
         HashSet<Integer> subset = new HashSet<>();
         subset.add(identifier);
+
         switch (identifier % 3) {
-            case 0:     // First column
+            case 0:                         // First column
                 subset.add(identifier + 1);
                 subset.add(identifier + 2);
                 if (identifier == 3 || identifier == 6)
@@ -33,7 +34,7 @@ public final class Utils {
                 if (identifier == 0 || identifier == 3)
                     subset.add(6);
                 break;
-            case 1:     // Second column
+            case 1:                         // Second column
                 subset.add(identifier - 1);
                 subset.add(identifier + 1);
                 if (identifier == 4 || identifier == 7)
@@ -43,7 +44,7 @@ public final class Utils {
                 if (identifier == 1 || identifier == 4)
                     subset.add(7);
                 break;
-            case 2:     // Third column
+            case 2:                         // Third column
                 subset.add(identifier - 1);
                 subset.add(identifier - 2);
                 if (identifier == 5 || identifier == 8)
@@ -54,6 +55,7 @@ public final class Utils {
                     subset.add(8);
                 break;
         }
+
         ArrayList<Integer> subsetList = new ArrayList<>(subset);
         Collections.sort(subsetList);
         return subsetList;
@@ -67,43 +69,6 @@ public final class Utils {
      */
     public static String printSubset(List<Integer> subset) {
         return subset.toString().replaceAll("[,\\[\\]]", "");
-    }
-
-    /**
-     * Sorts a list of messages based on each message's:
-     * <p>
-     * (1) timestamp (earlier messages are processed first);
-     * (2) receiverID (smaller IDs are processed first);
-     * (3) senderID (smaller IDs are processed first).
-     *
-     * @param messageList a list of messages.
-     */
-    public static void sortMessageList(List<Message> messageList) {
-        Collections.sort(messageList, (message1, message2) -> {
-            if (message1.getNanoTime() == message2.getNanoTime())
-                return message1.getSenderID() - message2.getSenderID();
-            else
-                return (int) (message1.getNanoTime() - message2.getNanoTime());
-        });
-    }
-
-    /**
-     * Checks if a list of Message objects already has a Message sent by a given senderID.
-     *
-     * @param messageList a list of Message objects being verified.
-     * @param senderID    an integer relative to a sender ID.
-     * @return <em>true</em> if the message list has a Message sent by a sender with the given id.
-     */
-    public static boolean hasMessageSentBy(List<Message> messageList, int senderID) {
-        if (messageList != null) {
-            if (messageList.size() > 0) {
-                for (Message m : messageList) {
-                    if (m.getSenderID() == senderID)
-                        return true;
-                }
-                return false;
-            } else return false;
-        } else return false;
     }
 
     /**

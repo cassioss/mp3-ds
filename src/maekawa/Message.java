@@ -9,8 +9,6 @@ package maekawa;
 public class Message {
     private int senderID, receiverID;
     private Content content;
-    private String sentTime;
-    private long sentNanoTime;
 
     /**
      * Creates a message based on its sender, its receiver and its content. Its timestamp is the current system time.
@@ -23,15 +21,6 @@ public class Message {
         this.senderID = senderID;
         this.receiverID = receiverID;
         this.content = content;
-        setSentTime();
-    }
-
-    /**
-     * Sets the current time in a reasonable format for the message.
-     */
-    private void setSentTime() {
-        sentNanoTime = System.nanoTime();
-        sentTime = Utils.getCurrentTime();
     }
 
     // Simple getters for each information
@@ -46,14 +35,5 @@ public class Message {
 
     public Content getContent() {
         return content;
-    }
-
-    public String getSentTime() {
-        return sentTime;
-    }
-
-
-    public long getNanoTime() {
-        return sentNanoTime;
     }
 }

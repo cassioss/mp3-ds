@@ -121,7 +121,7 @@ public class Mutex {
     private static class Timer extends Thread {
 
         /**
-         * Runs the Timer thread, which basically coodinates all thread's timeout.
+         * Runs the Timer thread, which basically coordinates all thread's timeout.
          */
         @Override
         public void run() {
