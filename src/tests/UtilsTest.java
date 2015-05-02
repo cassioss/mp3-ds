@@ -40,7 +40,7 @@ public class UtilsTest {
     }
 
     /**
-     * Tests throwing an exception for an identifier smaller than 1.
+     * Tests throwing an exception for an identifier smaller than 0.
      */
     @Test(expected = IllegalArgumentException.class)
     public void testIdentifierNegative() {
@@ -48,15 +48,18 @@ public class UtilsTest {
     }
 
     /**
-     * Tests throwing an exception for an identifier greater than 9.
+     * Tests throwing an exception for an identifier greater than 8.
      */
     @Test(expected = IllegalArgumentException.class)
     public void testIdentifier9() {
         Utils.subset(9);
     }
 
+    /**
+     * Tests the removal of square brackets and commas in an array list.
+     */
     @Test
-    public void testSquareBracketRemoval() {
+    public void testSquareBracketAndCommaRemoval() {
         Integer[] testSet = {1, 3, 4, 5, 8};
         assertEquals(Utils.printSubset(new ArrayList<>(Arrays.asList(testSet))), "1 3 4 5 8");
     }

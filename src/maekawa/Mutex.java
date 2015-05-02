@@ -25,6 +25,7 @@ public class Mutex {
         int totExecTime = Integer.valueOf(args[2]);
         int option = 0;
 
+
         if (args.length == 4) {
             if (Integer.valueOf(args[3]) == 1) {
                 option = 1;
@@ -32,13 +33,16 @@ public class Mutex {
                 throw new IllegalArgumentException("Error: invalid option");
         }
 
-        
+        new Timer().start();
+
     }
 
-    private class Timer extends Thread {
+    private static class Timer extends Thread {
         @Override
         public void run() {
+            while (true) {
 
+            }
         }
     }
 
