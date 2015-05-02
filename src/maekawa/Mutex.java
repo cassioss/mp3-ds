@@ -15,6 +15,8 @@ public class Mutex {
     protected static volatile long endTime;
     protected static volatile boolean afterInit = false;
     protected static volatile boolean timeout = false;
+    protected static volatile boolean multicast = false;
+    protected static volatile int multicastSender = -1;
 
     /**
      * Main method that creates all nodes and simulates the Maekawa mutex system.
@@ -73,7 +75,22 @@ public class Mutex {
      * @param messageMulticast a Message list object sent by a node.
      */
     protected static void sendMessageToAll(List<Message> messageMulticast) {
-        messageMulticast.forEach(maekawa.Mutex::sendMessage);
+        boolean isRequest = messageMulticast.get(0).getContent() == Content.REQUEST;
+        int senderID = messageMulticast.get(0).getSenderID();
+        if (!multicast && isRequest && multicastSender == -1) {
+            multicast = true;
+            multicastSender = senderID;
+            System.out.println("Multicast from node " + messageMulticast.get(0).getSenderID() + " received");
+        }
+        if (!isRequest || (multicast && multicastSender == senderID))
+            messageMulticast.forEach(maekawa.Mutex::sendMessage);
+        /*else
+            sendMessageToAll(messageMulticast); // Try again */
+        if (multicast && isRequest && multicastSender == senderID) {
+            multicast = false;
+            multicastSender = -1;
+            System.out.println("Multicast from node " + messageMulticast.get(0).getSenderID() + " finished");
+        }
     }
 
     /**

@@ -46,6 +46,8 @@ public class Node {
     }
 
     /**
+     * Runs a thread that listens to the message queue and processes every message being received.
+     *
      * @author Cassio dos Santos Sousa <dssntss2@illinois.edu>
      * @version 1.0
      */
@@ -119,10 +121,16 @@ public class Node {
 
 
     /**
+     * Runs a thread that keeps track of every  of this node.
+     *
      * @author Cassio dos Santos Sousa <dssntss2@illinois.edu>
      * @version 1.0
      */
     private class StateMachine extends Thread {
+
+        /**
+         * Runs the StateMachine thread. INIT is not processed continuously, since the node only stays in it once, and at the beginning.
+         */
         @Override
         public void run() {
             while (!Mutex.timeout) {
@@ -136,7 +144,10 @@ public class Node {
                     processRelease();
             }
         }
-
+        
+        /**
+         * Processes the REQUEST state.
+         */
         private void processRequest() {
             if (!sentMessages) {
                 sentMessages = true;
@@ -147,6 +158,9 @@ public class Node {
                 changeState(maekawa.State.HELD);
         }
 
+        /**
+         * Processes the HELD state.
+         */
         private void processHeld() {
             try {
                 sleep(csInt);
@@ -157,6 +171,9 @@ public class Node {
             }
         }
 
+        /**
+         * Processes the RELEASE state.
+         */
         private void processRelease() {
             try {
                 sleep(timeNextReq);
