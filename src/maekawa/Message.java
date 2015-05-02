@@ -15,7 +15,7 @@ public class Message {
         this.senderID = senderID;
         this.receiverID = receiverID;
         this.content = content;
-        this.sentTime = System.currentTimeMillis();
+        this.sentTime = System.nanoTime();
     }
 
     public int getSenderID() {

@@ -88,11 +88,11 @@ public final class Utils {
         });
     }
 
-    public static boolean hasItsOwnMessage(List<Message> messageList) {
+    public static boolean hasMessageSentBy(List<Message> messageList, int id) {
         if (messageList != null) {
             if (messageList.size() > 0) {
                 for (Message m : messageList) {
-                    if (m.getSenderID() == m.getReceiverID())
+                    if (m.getSenderID() == id)
                         return true;
                 }
                 return false;

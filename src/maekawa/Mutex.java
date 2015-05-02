@@ -1,6 +1,7 @@
 package maekawa;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -15,7 +16,6 @@ public class Mutex {
     protected static volatile long endTime;
     protected static volatile boolean afterInit = false;
     protected static volatile boolean timeout = false;
-    protected volatile List<Message> mutexMessageQueue;
 
     /**
      * Main method that creates all nodes and simulates the Maekawa mutex system.
@@ -24,7 +24,7 @@ public class Mutex {
      */
     public static void main(String[] args) {
 
-        nodeList = new ArrayList<>(9);  // Initial capacity of 9 nodes
+        nodeList = new ArrayList<>(9);          // Initial capacity of 9 nodes
 
         // Checks if the user set enough values to start running the algorithm
         if (args.length < 3 || args.length > 4) {
@@ -57,6 +57,15 @@ public class Mutex {
 
         //Releases nodes from INIT
         afterInit = true;
+    }
+
+    /**
+     * Gets the reicever of a Message and sends it to him.
+     *
+     * @param message a Message object sent by a node.
+     */
+    protected static void sendMessage(Message message) {
+        nodeList.get(message.getReceiverID()).messageQueue.add(message);
     }
 
     /**

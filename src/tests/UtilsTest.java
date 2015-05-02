@@ -78,4 +78,17 @@ public class UtilsTest {
         assertEquals(messageList.get(0), m1);               // Checks now that
         assertEquals(messageList.get(1), m2);               // The nodes are ordered
     }
+
+    @Test
+    public void testMessageSentBy() {
+        Message m0 = new Message(0, 2, Content.RELEASE);
+        Message m1 = new Message(1, 2, Content.RELEASE);
+        Message m2 = new Message(2, 2, Content.RELEASE);
+        List<Message> messageList = new LinkedList<>();
+        messageList.add(m0);
+        messageList.add(m1);
+        assertTrue(Utils.hasMessageSentBy(messageList, 0));
+        assertTrue(Utils.hasMessageSentBy(messageList, 1));
+        assertFalse(Utils.hasMessageSentBy(messageList, 2));
+    }
 }
