@@ -57,6 +57,8 @@ public class Node {
         }
 
         private void processRequest() {
+
+
             changeState(maekawa.State.HELD);
         }
 
@@ -87,7 +89,7 @@ public class Node {
         }
 
         private void processRequest() {
-
+            
         }
 
         private void processHeld() {

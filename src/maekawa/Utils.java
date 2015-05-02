@@ -87,4 +87,16 @@ public final class Utils {
                 return (int) (message1.getSentTime() - message2.getSentTime());
         });
     }
+
+    public static boolean hasItsOwnMessage(List<Message> messageList) {
+        if (messageList != null) {
+            if (messageList.size() > 0) {
+                for (Message m : messageList) {
+                    if (m.getSenderID() == m.getReceiverID())
+                        return true;
+                }
+                return false;
+            } else return false;
+        } else return false;
+    }
 }
