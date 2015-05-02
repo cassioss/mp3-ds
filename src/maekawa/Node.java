@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class Node {
 
     private volatile int identifier, csInt, timeNextReq, subsetSize;
-    private volatile ArrayList<Integer> subset;
+    protected volatile List<Integer> subset;
     protected volatile List<Message> messageQueue, responseQueue, repliesList;
     private volatile State state;
     private volatile boolean shouldPrintLogs, voted, sentMessages;
@@ -32,7 +32,7 @@ public class Node {
         this.csInt = csInt;
         this.timeNextReq = timeNextReq;
         this.shouldPrintLogs = option;
-        this.subset = Utils.subset(this.identifier);
+        this.subset = Collections.synchronizedList(Utils.subset(this.identifier));
         this.subsetSize = this.subset.size();
         this.state = State.INIT;
         this.voted = false;
@@ -144,7 +144,7 @@ public class Node {
                     processRelease();
             }
         }
-        
+
         /**
          * Processes the REQUEST state.
          */
@@ -204,6 +204,16 @@ public class Node {
      * @param content a content being multicast.
      */
     private void multicast(Content content) {
+        List<Message> multicast = subset.stream().map(id -> new Message(identifier, id, content)).collect(Collectors.toList());
+        Mutex.sendMessageToAll(multicast);
+    }
+
+    /**
+     * Multicasts the same content as a Message object to all nodes to a given node's subset. They are sent to the nodes at practically the same time.
+     *
+     * @param content a content being multicast.
+     */
+    protected void multicast(Content content, List<Integer> subset) {
         List<Message> multicast = subset.stream().map(id -> new Message(identifier, id, content)).collect(Collectors.toList());
         Mutex.sendMessageToAll(multicast);
     }

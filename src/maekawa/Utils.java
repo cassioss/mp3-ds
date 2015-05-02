@@ -64,7 +64,7 @@ public final class Utils {
      * @param subset an array list corresponding to a subset.
      * @return a string that removes the square brackets and the commas from the traditional toString() method.
      */
-    public static String printSubset(ArrayList<Integer> subset) {
+    public static String printSubset(List<Integer> subset) {
         return subset.toString().replaceAll("[,\\[\\]]", "");
     }
 

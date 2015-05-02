@@ -1,6 +1,8 @@
 package maekawa;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -16,7 +18,7 @@ public class Mutex {
     protected static volatile boolean afterInit = false;
     protected static volatile boolean timeout = false;
     protected static volatile boolean multicast = false;
-    protected static volatile int multicastSender = -1;
+    protected static volatile List<Integer> sendersToRequest;
 
     /**
      * Main method that creates all nodes and simulates the Maekawa mutex system.
@@ -26,6 +28,8 @@ public class Mutex {
     public static void main(String[] args) {
 
         nodeList = new ArrayList<>(9);          // Initial capacity of 9 nodes
+        sendersToRequest = Collections.synchronizedList(new LinkedList<>());
+
         // Checks if the user set enough values to start running the algorithm
         if (args.length < 3 || args.length > 4) {
             System.out.println("Usage: java -cp src maekawa.Mutex [cs_int] [next_req] [tot_exec_time] [option]");
@@ -72,25 +76,44 @@ public class Mutex {
     /**
      * Multicasts a message to all the nodes.
      *
-     * @param messageMulticast a Message list object sent by a node.
+     * @param messageMulticast a Message list sent by a node.
      */
     protected static void sendMessageToAll(List<Message> messageMulticast) {
         boolean isRequest = messageMulticast.get(0).getContent() == Content.REQUEST;
-        int senderID = messageMulticast.get(0).getSenderID();
-        if (!multicast && isRequest && multicastSender == -1) {
-            multicast = true;
-            multicastSender = senderID;
-            System.out.println("Multicast from node " + messageMulticast.get(0).getSenderID() + " received");
-        }
-        if (!isRequest || (multicast && multicastSender == senderID))
+        if (isRequest)  // This is a REQUEST multicast
+            semaphore(messageMulticast);
+        else            // This is a RELEASE multicast
             messageMulticast.forEach(maekawa.Mutex::sendMessage);
-        /*else
-            sendMessageToAll(messageMulticast); // Try again */
-        if (multicast && isRequest && multicastSender == senderID) {
+    }
+
+    /**
+     * Multicasts a message based on a semaphore.
+     *
+     * @param messageMulticast a Message list sent by a node.
+     */
+    protected static void semaphore(List<Message> messageMulticast) {
+        int senderID = messageMulticast.get(0).getSenderID();
+        if (sendersToRequest.size() >= 0)
+            sendersToRequest.add(senderID);
+        if (!multicast) {
+            multicast = true;
+            int senderToRequest = sendersToRequest.remove(0);
+            System.out.println("Multicast from node " + senderToRequest + " received");
+            resendRequest(senderToRequest);
+            System.out.println("Multicast from node " + senderToRequest + " finished");
             multicast = false;
-            multicastSender = -1;
-            System.out.println("Multicast from node " + messageMulticast.get(0).getSenderID() + " finished");
         }
+    }
+
+    /**
+     * Resends a REQUEST message to all the nodes that are in a sender's subset.
+     *
+     * @param senderID the sender identifier.
+     */
+    protected static void resendRequest(int senderID) {
+        List<Integer> senderSubset = nodeList.get(senderID).subset;
+        for (Integer identifier : senderSubset)
+            sendMessage(new Message(senderID, identifier, Content.REQUEST));
     }
 
     /**
