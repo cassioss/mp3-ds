@@ -1,14 +1,21 @@
 package maekawa;
 
+import java.util.ArrayList;
+
 /**
  * @author Cassio
  * @version 1.0
  */
 public class Mutex {
 
+    protected static ArrayList<Node> nodeList;
+    
     public static void main(String[] args) {
+
+        nodeList = new ArrayList<>(9);  // Initial capacity of 9 nodes
+
         if (args.length < 3 || args.length > 4) {
-            System.out.println("Usage: java Mutex [cs_int] [next_req] [tot_exec_time] [option]");
+            System.out.println("Usage: java -cp src maekawa.Mutex [cs_int] [next_req] [tot_exec_time] [option]");
             return;
         }
 

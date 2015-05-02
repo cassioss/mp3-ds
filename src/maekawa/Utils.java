@@ -57,4 +57,8 @@ public final class Utils {
         Collections.sort(subsetList);
         return subsetList;
     }
+
+    public static String printSubset(ArrayList<Integer> subset) {
+        return subset.toString().replaceAll("[,\\[\\]]", "");
+    }
 }

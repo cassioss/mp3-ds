@@ -54,4 +54,10 @@ public class UtilsTest {
     public void testIdentifier10() {
         Utils.subset(10);
     }
+
+    @Test
+    public void testSquareBracketRemoval() {
+        Integer[] testSet = {1, 3, 4, 5, 8};
+        assertEquals(Utils.printSubset(new ArrayList<>(Arrays.asList(testSet))), "1 3 4 5 8");
+    }
 }
