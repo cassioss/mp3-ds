@@ -7,13 +7,30 @@ package maekawa;
  * @version 1.0
  */
 public class Message {
-    int identifier;
-    Content content;
-    long sentTime;
+    private int senderID, receiverID;
+    private Content content;
+    private long sentTime;
 
-    public Message(int identifier, Content content) {
-        this.identifier = identifier;
+    public Message(int senderID, int receiverID, Content content) {
+        this.senderID = senderID;
+        this.receiverID = receiverID;
         this.content = content;
         this.sentTime = System.currentTimeMillis();
+    }
+
+    public int getSenderID() {
+        return senderID;
+    }
+
+    public int getReceiverID() {
+        return receiverID;
+    }
+
+    public Content getContent() {
+        return content;
+    }
+
+    public long getSentTime() {
+        return sentTime;
     }
 }

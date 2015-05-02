@@ -1,10 +1,11 @@
 package tests;
 
+import maekawa.Content;
+import maekawa.Message;
 import maekawa.Utils;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -62,5 +63,19 @@ public class UtilsTest {
     public void testSquareBracketAndCommaRemoval() {
         Integer[] testSet = {1, 3, 4, 5, 8};
         assertEquals(Utils.printSubset(new ArrayList<>(Arrays.asList(testSet))), "1 3 4 5 8");
+    }
+
+    @Test
+    public void testOrderingMessages() {
+        Message m1 = new Message(1, 3, Content.RELEASE);    // This message comes before
+        Message m2 = new Message(2, 3, Content.RELEASE);    // this one
+        List<Message> messageList = new LinkedList<>();
+        messageList.add(m2);
+        messageList.add(m1);
+        assertEquals(messageList.get(0), m2);               // Checks that, initially,
+        assertEquals(messageList.get(1), m1);               // the nodes are unordered
+        Utils.sortMessageList(messageList);
+        assertEquals(messageList.get(0), m1);               // Checks now that
+        assertEquals(messageList.get(1), m2);               // The nodes are ordered
     }
 }

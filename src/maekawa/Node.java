@@ -77,10 +77,38 @@ public class Node {
         @Override
         public void run() {
             while (!Mutex.timeout) {
-
+                if (state == maekawa.State.REQUEST)
+                    processRequest();
+                else if (state == maekawa.State.HELD)
+                    processHeld();
+                else if (state == maekawa.State.RELEASE)
+                    processRelease();
             }
         }
 
+        private void processRequest() {
+
+        }
+
+        private void processHeld() {
+
+        }
+
+        private void processRelease() {
+
+        }
+
+        public Message requestMessageTo(int receiverID) {
+            return new Message(identifier, receiverID, Content.REQUEST);
+        }
+
+        public Message replyMessageTo(int receiverID) {
+            return new Message(identifier, receiverID, Content.REPLY);
+        }
+
+        public Message releaseMessageTo(int receiverID) {
+            return new Message(identifier, receiverID, Content.RELEASE);
+        }
 
     }
 

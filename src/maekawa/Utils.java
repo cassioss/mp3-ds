@@ -1,7 +1,5 @@
 package maekawa;
 
-import javafx.collections.transformation.SortedList;
-
 import java.util.*;
 
 /**
@@ -71,12 +69,22 @@ public final class Utils {
     }
 
     /**
-     * Sorts a list of messages according to their timestamps.
+     * Sorts a list of messages based on each message's:
+     * <p>
+     * (1) timestamp (earlier messages are processed first);
+     * (2) receiverID (smaller IDs are processed first);
+     * (3) senderID (smaller IDs are processed first).
      *
-     * @param messageList a list of Message objects.
+     * @param messageList a list of messages.
      */
     public static void sortMessageList(List<Message> messageList) {
-        Collections.sort(messageList, (m1, m2) -> (int) (m1.sentTime - m2.sentTime));
+        Collections.sort(messageList, (message1, message2) -> {
+            if (message1.getSentTime() == message2.getSentTime() && message1.getReceiverID() == message2.getReceiverID())
+                return message1.getSenderID() - message2.getSenderID();
+            else if (message1.getSentTime() == message2.getSentTime())
+                return message1.getReceiverID() - message2.getReceiverID();
+            else
+                return (int) (message1.getSentTime() - message2.getSentTime());
+        });
     }
-
 }

@@ -32,10 +32,10 @@ public class Mutex {
             return;
         }
 
-        // All time variables must be multiplied by 1000 to be counted in seconds
-        int csInt = Integer.valueOf(args[0]) * 1000;
-        int timeNextReq = Integer.valueOf(args[1]) * 1000;
-        int totExecTime = Integer.valueOf(args[2]) * 1000;
+        int csInt = Integer.valueOf(args[0]);
+        int timeNextReq = Integer.valueOf(args[1]);
+        int totExecTime = Integer.valueOf(args[2]) * 1000; // In order to be counted in seconds
+
         boolean option = false;
 
         // Checks if the option being received is either 0, 1 or nothing
