@@ -128,7 +128,6 @@ public class Mutex {
             while (true) {
                 if (endTime <= System.currentTimeMillis()) {
                     timeout = true;
-                    System.out.println("TIMEOUT");
                     System.exit(0);
                 }
             }
