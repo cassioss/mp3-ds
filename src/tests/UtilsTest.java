@@ -1,7 +1,6 @@
 package tests;
 
 import maekawa.Utils;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -15,6 +14,9 @@ import static org.junit.Assert.*;
  */
 public class UtilsTest {
 
+    /**
+     * Tests the correct output for the subset() method.
+     */
     @Test
     public void testSubset() {
         Integer[] testSet1 = {1, 2, 3, 4, 7};
@@ -37,4 +39,19 @@ public class UtilsTest {
         assertEquals(Utils.subset(9), new ArrayList<>(Arrays.asList(testSet9)));
     }
 
+    /**
+     * Tests throwing an exception for an identifier smaller than 1.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testIdentifier0() {
+        Utils.subset(0);
+    }
+
+    /**
+     * Tests throwing an exception for an identifier greater than 9.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testIdentifier10() {
+        Utils.subset(10);
+    }
 }

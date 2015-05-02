@@ -9,7 +9,16 @@ import java.util.HashSet;
  * @version 1.0
  */
 public final class Utils {
+
+    /**
+     * Generates a list containing the subset of a node given its identifier.
+     *
+     * @param identifier a number between 1 and 9, corresponding to a given node.
+     * @return an array list containing five identifiers for the voting set.
+     */
     public static ArrayList<Integer> subset(int identifier) {
+        if (identifier < 1 || identifier > 9)
+            throw new IllegalArgumentException("You set the wrong identifier");
         HashSet<Integer> subset = new HashSet<>();
         subset.add(identifier);
         switch (identifier % 3) {
