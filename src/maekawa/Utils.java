@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.HashSet;
 
 /**
- * @author Cassio
+ * @author Cassio dos Santos Sousa <dssntss2@illinois.edu>
  * @version 1.0
  */
 public final class Utils {

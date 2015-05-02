@@ -9,7 +9,7 @@ import java.util.Arrays;
 import static org.junit.Assert.*;
 
 /**
- * @author Cassio
+ * @author Cassio dos Santos Sousa <dssntss2@illinois.edu>
  * @version 1.0
  */
 public class UtilsTest {

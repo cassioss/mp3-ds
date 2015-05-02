@@ -3,13 +3,13 @@ package maekawa;
 import java.util.ArrayList;
 
 /**
- * @author Cassio
+ * @author Cassio dos Santos Sousa <dssntss2@illinois.edu>
  * @version 1.0
  */
 public class Mutex {
 
     protected static ArrayList<Node> nodeList;
-    
+
     public static void main(String[] args) {
 
         nodeList = new ArrayList<>(9);  // Initial capacity of 9 nodes
@@ -19,9 +19,9 @@ public class Mutex {
             return;
         }
 
-        int criticalSectionInterval = Integer.valueOf(args[0]);
-        int timeForNextRequest = Integer.valueOf(args[1]);
-        int totalExecutionTime = Integer.valueOf(args[2]);
+        int csInt = Integer.valueOf(args[0]);
+        int timeNextReq = Integer.valueOf(args[1]);
+        int totExecTime = Integer.valueOf(args[2]);
         int option = 0;
 
         if (args.length == 4) {
