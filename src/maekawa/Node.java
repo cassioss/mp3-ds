@@ -44,12 +44,20 @@ public class Node {
         new StateMachine().start();
     }
 
+    /**
+     * @author Cassio dos Santos Sousa <dssntss2@illinois.edu>
+     * @version 1.0
+     */
     private class Listener extends Thread {
+
+        /**
+         * Runs the Listener thread, keeping track of every message being sent to this node.
+         */
         @Override
         public void run() {
             while (!Mutex.timeout) {
                 if (messageQueue.size() > 0) {
-                    Utils.sortMessageList(messageQueue);
+                    //Utils.sortMessageList(messageQueue);
                     Message firstMessage = messageQueue.remove(0);
                     if (shouldPrintLogs)
                         printMessageLog(firstMessage);
@@ -63,6 +71,11 @@ public class Node {
             }
         }
 
+        /**
+         * Processes a REQUEST message from another node inside its subset.
+         *
+         * @param message a Message object with a REQUEST content.
+         */
         private void processRequest(Message message) {
             if (state == maekawa.State.HELD || voted) {
                 responseQueue.add(message);
@@ -74,6 +87,11 @@ public class Node {
             }
         }
 
+        /**
+         * Processes a REPLY message from another node inside its subset.
+         *
+         * @param message a Message object with a REPLY content.
+         */
         private void processReply(Message message) {
             if (repliesList.size() < subsetSize) {
                 if (!Utils.hasMessageSentBy(repliesList, message.getSenderID()) && subset.contains(message.getSenderID())) {
@@ -83,6 +101,9 @@ public class Node {
             }
         }
 
+        /**
+         * Processes a RELEASE message from another node inside its subset.
+         */
         private void processRelease() {
             if (responseQueue.size() > 0) {
                 //Utils.sortMessageList(responseQueue);
@@ -93,13 +114,13 @@ public class Node {
             } else voted = false;
         }
 
-    }
+    } // End of Listener thread
 
-    private void printMessageLog(Message message) {
-        long currentTime = System.currentTimeMillis();
-        System.out.println(currentTime + " " + message.getReceiverID() + " " + message.getSenderID() + " " + message.getContent() + " " + message.getSentTime());
-    }
 
+    /**
+     * @author Cassio dos Santos Sousa <dssntss2@illinois.edu>
+     * @version 1.0
+     */
     private class StateMachine extends Thread {
         @Override
         public void run() {
@@ -144,30 +165,47 @@ public class Node {
                 e.printStackTrace();
             }
         }
+    } // End of StateMachine thread
 
-    }
+    // Message-sending methods
 
-    private void multicast(Content content) {
-        for (Integer id : subset)
-            sendMessageTo(content, id);
-    }
-
+    /**
+     * Sends a Message object with a specific content to a specific receiver.
+     *
+     * @param content    the message content (REQUEST, REPLY or RELEASE).
+     * @param receiverID the receiver identifier.
+     */
     private void sendMessageTo(Content content, Integer receiverID) {
         Mutex.sendMessage(new Message(identifier, receiverID, content));
         //System.out.println("Node " + identifier + " sent " + content + " to node " + receiverID);
     }
 
-    private void printCriticalSectionLog() {
-        SimpleDateFormat sdfDate = new SimpleDateFormat("HH:mm:ss.SSS");
-        Date now = new Date();
-        String currentTime = sdfDate.format(now);
-        System.out.println(currentTime + " " + identifier + " " + Utils.printSubset(subset));
+    /**
+     * Multicasts the same content as a Message object to all nodes inside this node's subset. They are sent to the nodes at practically the same time.
+     *
+     * @param content a content being multicast.
+     */
+    private void multicast(Content content) {
+        List<Message> multicast = new ArrayList<>();
+        for (Integer id : subset)
+            multicast.add(new Message(identifier, id, content));
+        Mutex.sendMessageToAll(multicast);
     }
 
+    // State-related methods
+
+    /**
+     * Prints the node's current state. For debugging purposes.
+     */
     private void printCurrentState() {
         System.out.println("Node " + identifier + " " + state);
     }
 
+    /**
+     * Changes a node's state. If the node goes to the HELD state, it prints a message log.
+     *
+     * @param newState the node's new state.
+     */
     private void changeState(State newState) {
         if (state != newState) {
             state = newState;
@@ -177,4 +215,26 @@ public class Node {
         }
     }
 
+    // Log printint methods
+
+    /**
+     * Prints a message log whenever the node enters the critical section.
+     */
+    private void printCriticalSectionLog() {
+        SimpleDateFormat sdfDate = new SimpleDateFormat("HH:mm:ss.SSS");
+        Date now = new Date();
+        String currentTime = sdfDate.format(now);
+        System.out.println(currentTime + " " + identifier + " " + Utils.printSubset(subset));
+    }
+
+
+    /**
+     * Prints a message log whenever a node receives it. Only works if option was set to 1 before running Mutex.
+     *
+     * @param message a Message object being received.
+     */
+    private void printMessageLog(Message message) {
+        long currentTime = System.currentTimeMillis();
+        System.out.println(currentTime + " " + message.getReceiverID() + " " + message.getSenderID() + " " + message.getContent() + " " + message.getSentTime());
+    }
 }

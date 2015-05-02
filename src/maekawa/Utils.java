@@ -86,11 +86,18 @@ public final class Utils {
         });
     }
 
-    public static boolean hasMessageSentBy(List<Message> messageList, int id) {
+    /**
+     * Checks if a list of Message objects already has a Message sent by a given senderID.
+     *
+     * @param messageList a list of Message objects being verified.
+     * @param senderID    an integer relative to a sender ID.
+     * @return <em>true</em> if the message list has a Message sent by a sender with the given id.
+     */
+    public static boolean hasMessageSentBy(List<Message> messageList, int senderID) {
         if (messageList != null) {
             if (messageList.size() > 0) {
                 for (Message m : messageList) {
-                    if (m.getSenderID() == id)
+                    if (m.getSenderID() == senderID)
                         return true;
                 }
                 return false;

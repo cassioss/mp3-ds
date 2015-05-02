@@ -65,6 +65,9 @@ public class UtilsTest {
         assertEquals(Utils.printSubset(new ArrayList<>(Arrays.asList(testSet))), "1 3 4 5 8");
     }
 
+    /**
+     * Tests ordering messages inside a message list.
+     */
     @Test
     public void testOrderingMessages() {
         Message m1 = new Message(1, 3, Content.RELEASE);    // This message comes before
@@ -79,6 +82,9 @@ public class UtilsTest {
         assertEquals(messageList.get(1), m2);               // The nodes are ordered
     }
 
+    /**
+     * Tests checking if a message list already has a message of a given sender ID.
+     */
     @Test
     public void testMessageSentBy() {
         Message m0 = new Message(0, 2, Content.RELEASE);

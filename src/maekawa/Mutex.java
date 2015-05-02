@@ -1,6 +1,9 @@
 package maekawa;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Main class that coordinates the Maekawa mutex system.
@@ -14,6 +17,8 @@ public class Mutex {
     protected static volatile long endTime;
     protected static volatile boolean afterInit = false;
     protected static volatile boolean timeout = false;
+    protected static volatile int nodeThatStarted = -1;
+    protected static volatile List<Message> archivedMessages;
 
     /**
      * Main method that creates all nodes and simulates the Maekawa mutex system.
@@ -23,6 +28,7 @@ public class Mutex {
     public static void main(String[] args) {
 
         nodeList = new ArrayList<>(9);          // Initial capacity of 9 nodes
+        archivedMessages = Collections.synchronizedList(new LinkedList<>());
 
         // Checks if the user set enough values to start running the algorithm
         if (args.length < 3 || args.length > 4) {
@@ -30,6 +36,7 @@ public class Mutex {
             return;
         }
 
+        // Parses the information into processing times
         int csInt = Integer.valueOf(args[0]);
         int timeNextReq = Integer.valueOf(args[1]);
         int totExecTime = Integer.valueOf(args[2]) * 1000; // In order to be counted in seconds
@@ -58,12 +65,22 @@ public class Mutex {
     }
 
     /**
-     * Gets the reicever of a Message and sends it to him.
+     * Gets the receiver of a Message and sends it to him.
      *
      * @param message a Message object sent by a node.
      */
     protected static void sendMessage(Message message) {
         nodeList.get(message.getReceiverID()).messageQueue.add(message);
+    }
+
+    /**
+     * Multicasts a message to all the nodes.
+     *
+     * @param messageMulticast a Message list object sent by a node.
+     */
+    protected static void sendMessageToAll(List<Message> messageMulticast) {
+        for (Message message : messageMulticast)
+            sendMessage(message);
     }
 
     /**

@@ -11,6 +11,13 @@ public class Message {
     private Content content;
     private long sentTime;
 
+    /**
+     * Creates a message based on its sender, its receiver and its content. Its timestamp is the current system time.
+     *
+     * @param senderID   the sender identifier.
+     * @param receiverID the receiver identifier.
+     * @param content    the content of the message (REQUEST, REPLY or RELEASE).
+     */
     public Message(int senderID, int receiverID, Content content) {
         this.senderID = senderID;
         this.receiverID = receiverID;
@@ -18,13 +25,13 @@ public class Message {
         this.sentTime = System.nanoTime();
     }
 
+    // Simple getters for each information
+
     public int getSenderID() {
         return senderID;
     }
 
-    public int getReceiverID() {
-        return receiverID;
-    }
+    public int getReceiverID() { return receiverID; }
 
     public Content getContent() {
         return content;
