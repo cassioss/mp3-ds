@@ -1,6 +1,8 @@
 package maekawa;
 
 /**
+ * Creates a message that contains the sender node's identifier and a simple content (either REQUEST, REPLY or RELEASE).
+ *
  * @author Cassio dos Santos Sousa <dssntss2@illinois.edu>
  * @version 1.0
  */

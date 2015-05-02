@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.HashSet;
 
 /**
+ * Simple static methods for the remaining classes. Most of them are (or can be) tested.
+ *
  * @author Cassio dos Santos Sousa <dssntss2@illinois.edu>
  * @version 1.0
  */
