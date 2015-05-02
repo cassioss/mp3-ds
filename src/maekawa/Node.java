@@ -2,6 +2,7 @@ package maekawa;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Simulates a node in a distributed system that implements the Maekawa's algorithm.
@@ -186,9 +187,7 @@ public class Node {
      * @param content a content being multicast.
      */
     private void multicast(Content content) {
-        List<Message> multicast = new ArrayList<>();
-        for (Integer id : subset)
-            multicast.add(new Message(identifier, id, content));
+        List<Message> multicast = subset.stream().map(id -> new Message(identifier, id, content)).collect(Collectors.toList());
         Mutex.sendMessageToAll(multicast);
     }
 
@@ -215,7 +214,7 @@ public class Node {
         }
     }
 
-    // Log printint methods
+    // Log printing methods
 
     /**
      * Prints a message log whenever the node enters the critical section.
